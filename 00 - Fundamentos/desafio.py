@@ -25,7 +25,16 @@ def cadastrar_conta(contas, clientes):
 
     if cliente_encontrado:
         numero_conta = input("Informe o número da conta: ")
-        conta = {"numero_conta": numero_conta, "cpf": cpf_cliente, "saldo": 0, "limite": 500, "extrato": "", "numero_saques": 0}
+        conta = {
+            "numero_conta": numero_conta, 
+            "cpf": cpf_cliente, 
+            "saldo": 0, 
+            "limite": 500, 
+            "extrato": "", 
+            "numero_saques": 0,
+            "numero_transacoes": 0,  # Contador de transações
+            "limite_transacoes": 10  # Limite de transações
+        }
         contas.append(conta)
 
         # Mostrar os dados do cliente e da conta cadastrada
@@ -36,15 +45,25 @@ def cadastrar_conta(contas, clientes):
 
 # Função para realizar depósito
 def depositar(conta, valor):
+    if conta["numero_transacoes"] >= conta["limite_transacoes"]:
+        print("Você excedeu o limite de 10 transações!")
+        return
+
     if valor > 0:
         conta["saldo"] += valor
         data_hora_atual = datetime.datetime.now()
         conta["extrato"] += f"Depósito: R$ {valor:.2f} | Data: {data_hora_atual.strftime('%d/%m/%Y %H:%M:%S')}\n"
+        conta["numero_transacoes"] += 1  # Incrementa o número de transações
+        print(f"Depósito de R$ {valor:.2f} realizado com sucesso!")
     else:
         print("Operação falhou! O valor informado é inválido.")
 
 # Função para realizar saque
 def sacar(conta, valor):
+    if conta["numero_transacoes"] >= conta["limite_transacoes"]:
+        print("Você excedeu o limite de 10 transações!")
+        return
+
     excedeu_saldo = valor > conta["saldo"]
     excedeu_limite = valor > conta["limite"]
     excedeu_saques = conta["numero_saques"] >= 3
@@ -58,8 +77,10 @@ def sacar(conta, valor):
     elif valor > 0:
         conta["saldo"] -= valor
         conta["numero_saques"] += 1
+        conta["numero_transacoes"] += 1  # Incrementa o número de transações
         data_hora_atual = datetime.datetime.now()
         conta["extrato"] += f"Saque: R$ {valor:.2f} | Data: {data_hora_atual.strftime('%d/%m/%Y %H:%M:%S')}\n"
+        print(f"Saque de R$ {valor:.2f} realizado com sucesso!")
     else:
         print("Operação falhou! O valor informado é inválido.")
 
@@ -132,4 +153,3 @@ def main():
 # Iniciando o programa
 if __name__ == "__main__":
     main()
-
