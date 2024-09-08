@@ -1,17 +1,13 @@
-def mensagem(nome):
-    print("executando mensagem")
-    return f"Oi {nome}"
+def executar(qualquer_funcao, nome,idade):
+    return qualquer_funcao(nome,idade)
 
+def funcao1(nome,idade):
+    return f"Oi {nome}!"
 
-def mensagem_longa(nome):
-    print("executando mensagem longa")
+def funcao2(nome,idade):
     return f"Olá tudo bem com você {nome}?"
 
-
-def executar(funcao, nome):
-    print("executando executar")
-    return funcao(nome)
-
-
-print(executar(mensagem, "Joao"))
-print(executar(mensagem_longa, "Joao"))
+def funcao3(nome,idade):
+    return f"{nome} tem {idade} anos."
+    
+print(executar(funcao3, "Joao",21))
