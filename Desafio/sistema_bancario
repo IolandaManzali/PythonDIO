@@ -1,0 +1,68 @@
+from datetime import date
+
+menu = """
+
+[d] Depositar
+[s] Sacar
+[e] Extrato
+[q] Sair
+
+=> """
+
+saldo = 0
+limite = 500
+extrato = ""
+numero_saques = 0
+LIMITE_SAQUES = 3
+data = date.today()
+data =data.strftime("%d/%m/%Y")
+
+while True:
+
+    opcao = input(menu)
+
+    if opcao == "d":
+        valor = float(input("Informe o valor do depósito: "))
+
+        if valor > 0:
+            saldo += valor
+            dados = (data, "Depósito ", valor)
+            extrato += f"{data} Depósito: R$ {valor:.2f}\n"
+
+        else:
+            print("Operação falhou! O valor informado é invalido")
+
+    elif opcao == "s":
+        valor = float(input("Informe o valor do saque: "))
+        if valor > 0 and valor <= 500 and valor <= saldo and numero_saques < LIMITE_SAQUES:
+            saldo -= valor
+            extrato += f"{data} Saque: R$ {valor:.2f}\n"
+            numero_saques += 1
+            print(numero_saques)
+
+        elif numero_saques >= LIMITE_SAQUES:
+            print("Operação falhou! O número de saques foi excedido.")
+
+        elif valor > 500:
+            print("Operação falhou! O valor do saque excede o limite.")
+
+        elif valor > saldo:
+            print("Operação falhou! Você não tem saldo suficiente.")
+
+        else:
+            print("Operação falhou! O valor informado é invalido")  
+
+    elif opcao == "e":
+        print("\n===============EXTRATO=====================")
+        print("Não foram realizadas movimentações." if not extrato else extrato)
+        print(f"\nSaldo em {data}: R${saldo:.2f}")
+        print("==============================================")
+
+    elif opcao == "q":
+        break
+
+    else:
+        print("Operação inválida, por favor selecione novamente a operação desejada.")
+
+
+    
