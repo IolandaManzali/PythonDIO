@@ -199,8 +199,13 @@ def recuperar_conta_cliente(cliente):
         print("\n@@@ Cliente não possui conta! @@@")
         return
 
-    # FIXME: não permite cliente escolher a conta
-    return cliente.contas[0]
+    print("\n=== Contas do cliente ===")
+    for i, conta in enumerate(cliente.contas, start=1):
+        print(f"[{i}] Conta número: {conta.numero} - Agência: {conta.agencia}")
+
+    escolha = int(input("Escolha o número da conta: ")) - 1
+    return cliente.contas[escolha]
+
 
 
 def depositar(clientes):
