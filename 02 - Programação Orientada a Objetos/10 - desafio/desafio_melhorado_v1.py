@@ -308,6 +308,110 @@ def recuperar_conta_cliente(cliente):
     :param cliente: Cliente do qual se deseja recuperar a conta.
     :return: Conta do cliente ou None se não houver conta.
     """
+    return cliente.contas[0] if cliente.contas else None  # Verifica se o cliente tem contas
+
+
+def main():
+    """
+    Função principal que executa o sistema bancário.
+    """
+    clientes = []  # Lista de clientes do sistema
+    contas = []  # Lista de contas do sistema
+
+    while True:
+        opcao = menu()  # Exibe o menu
+
+        if opcao == "q":
+            break  # Encerra o programa
+
+        elif opcao == "nu":
+            nome = input("Nome do usuário: ")
+            data_nascimento = input("Data de nascimento (dd-mm-yyyy): ")
+            cpf = input("CPF: ")
+            endereco = input("Endereço: ")
+            cliente = PessoaFisica(nome, data_nascimento, cpf, endereco)
+            clientes.append(cliente)  # Adiciona o cliente à lista de clientes
+            print(f"Cliente {nome} adicionado com sucesso!")
+
+        elif opcao == "nc":
+            if not clientes:
+                print("\n@@@ Não há clientes cadastrados! @@@")
+                continue  # Pula para a próxima iteração
+            cpf = input("Informe o CPF do cliente: ")
+            cliente = filtrar_cliente(cpf, clientes)
+
+            if not cliente:
+                print("\n@@@ Cliente não encontrado! @@@")
+                continue  # Pula para a próxima iteração
+
+            numero_conta = input("Número da conta: ")
+            conta = ContaCorrente.nova_conta(cliente, numero_conta)
+            contas.append(conta)  # Adiciona a conta à lista de contas do sistema
+            cliente.adicionar_conta(conta)  # Adiciona a conta ao cliente
+            print(f"Conta {numero_conta} criada com sucesso!")
+
+        elif opcao == "lc":
+            if not contas:
+                print("\n@@@ Não há contas cadastradas! @@@")
+                continue  # Pula para a próxima iteração
+
+            for conta in contas:
+                print(conta)  # Imprime as informações da conta
+
+        elif opcao == "d":
+            if not contas:
+                print("\n@@@ Não há contas cadastradas! @@@")
+                continue  # Pula para a próxima iteração
+
+            cpf = input("Informe o CPF do cliente: ")
+            cliente = filtrar_cliente(cpf, clientes)
+
+            if not cliente:
+                print("\n@@@ Cliente não encontrado! @@@")
+                continue  # Pula para a próxima iteração
+
+            conta = recuperar_conta_cliente(cliente)
+            valor = float(input("Valor a ser depositado: "))
+            transacao = Deposito(valor)  # Cria uma nova transação de depósito
+            cliente.realizar_transacao(conta, transacao)  # Realiza a transação
+
+        elif opcao == "s":
+            if not contas:
+                print("\n@@@ Não há contas cadastradas! @@@")
+                continue  # Pula para a próxima iteração
+
+            cpf = input("Informe o CPF do cliente: ")
+            cliente = filtrar_cliente(cpf, clientes)
+
+            if not cliente:
+                print("\n@@@ Cliente não encontrado! @@@")
+                continue  # Pula para a próxima iteração
+
+            conta = recuperar_conta_cliente(cliente)
+            valor = float(input("Valor a ser sacado: "))
+            transacao = Saque(valor)  # Cria uma nova transação de saque
+            cliente.realizar_transacao(conta, transacao)  # Realiza a transação
+
+        elif opcao == "e":
+            if not contas:
+                print("\n@@@ Não há contas cadastradas! @@@")
+                continue  # Pula para a próxima iteração
+
+            cpf = input("Informe o CPF do cliente: ")
+            cliente = filtrar_cliente(cpf, clientes)
+
+            if not cliente:
+                print("\n@@@ Cliente não encontrado! @@@")
+                continue  # Pula para a próxima iteração
+
+            conta = recuperar_conta_cliente(cliente)
+            print("\n=== Extrato ===")
+            for transacao in conta.historico.transacoes:
+                print(f"{transacao['data']} - {transacao['tipo']}: R$ {transacao['valor']}")
+            print(f"Saldo: R$ {conta.saldo}")
+
+if __name__ == "__main__":
+    main()
 
 
     """
@@ -361,7 +465,7 @@ plt.title("Diagrama UML do Sistema Bancário", fontsize=16)
 plt.savefig('/mnt/data/diagrama_uml_sistema_bancario.png', format='png')
 plt.show()
 
-    """
+"""
     Melhorias Destacadas
 Estrutura de Classes: Utilização de classes para representar conceitos de cliente, conta e transações, tornando o código mais organizado e modular.
 Herança e Polimorfismo: Implementação de herança (ex. ContaCorrente estendendo Conta) e polimorfismo, facilitando a manutenção e extensibilidade do sistema.
@@ -409,4 +513,5 @@ Herança: Cliente -> PessoaFisica, Conta -> ContaCorrente, Transacao -> Saque/De
 Associação: Cliente possui Conta, Conta possui Historico.
 
 Diagrama UML adicionando na pasta do desafio
-    """
+
+"""
