@@ -3,6 +3,8 @@ menu = """
 [d] Depositar
 [s] Sacar
 [e] Extrato
+[r] Receber Salário
+[t] Solicitar Empréstimo
 [q] Sair
 
 => """
@@ -12,6 +14,12 @@ limite = 500
 extrato = ""
 numero_saques = 0
 LIMITE_SAQUES = 3
+salario = 3500
+emprestimo = 0
+valor_emprestimo = 500
+parcelas_emprestimo = 0
+parcela_mensal = 50
+emprestimo_quitado = False
 
 while True:
 
@@ -31,9 +39,7 @@ while True:
         valor = float(input("Informe o valor do saque: "))
 
         excedeu_saldo = valor > saldo
-
         excedeu_limite = valor > limite
-
         excedeu_saques = numero_saques >= LIMITE_SAQUES
 
         if excedeu_saldo:
@@ -58,6 +64,30 @@ while True:
         print("Não foram realizadas movimentações." if not extrato else extrato)
         print(f"\nSaldo: R$ {saldo:.2f}")
         print("==========================================")
+
+    elif opcao == "r":
+        saldo += salario
+        extrato += f"Salário recebido: R$ {salario:.2f}\n"
+        print(f"Salário de R$ {salario:.2f} recebido com sucesso!")
+
+        if parcelas_emprestimo > 0:
+            saldo -= parcela_mensal
+            parcelas_emprestimo -= 1
+            extrato += f"Parcela de empréstimo debitada: R$ {parcela_mensal:.2f}\n"
+
+            if parcelas_emprestimo == 0:
+                emprestimo_quitado = True
+                print("Empréstimo quitado!")
+
+    elif opcao == "t":
+        if emprestimo == 0:
+            emprestimo = valor_emprestimo
+            saldo += emprestimo
+            parcelas_emprestimo = valor_emprestimo // parcela_mensal
+            extrato += f"Empréstimo solicitado: R$ {emprestimo:.2f}\n"
+            print(f"Empréstimo de R$ {emprestimo:.2f} concedido!")
+        else:
+            print("Você já possui um empréstimo ativo. Não é possível solicitar outro.")
 
     elif opcao == "q":
         break
