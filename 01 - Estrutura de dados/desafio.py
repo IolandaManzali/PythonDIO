@@ -1,5 +1,5 @@
 import textwrap
-import datetime
+from datetime import datetime
 
 
 def menu():
@@ -13,57 +13,59 @@ def menu():
     [nu]\tNovo usuário
     [q]\tSair
     => """
-    datetime.today
     return input(textwrap.dedent(menu))
 
 
 def depositar(saldo, valor, extrato, /):
     if valor > 0:
         saldo += valor
-        extrato += f"Depósito:\tR$ {valor:.2f}\n"
-        print("\n=== Depósito realizado com sucesso! ===" datetime.datetime)
+        data_horario = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        extrato += (
+            f"Depósito:\tR$ {valor:.2f}\tData: {data_horario}\n"
+        )
+        print("\n=== Depósito realizado com sucesso! ===")
     else:
         print("\n@@@ Operação falhou! O valor informado é inválido. @@@")
-
     return saldo, extrato
 
 
-def sacar(*, saldo, valor, extrato, limite, numero_saques, limite_saques):
-    excedeu_saldo = valor > saldo
-    excedeu_limite = valor > limite
-    excedeu_saques = numero_saques >= limite_saques
-
-    if excedeu_saldo:
-        print("\n@@@ Operação falhou! Você não tem saldo suficiente. @@@")
-
-    elif excedeu_limite:
-        print("\n@@@ Operação falhou! O valor do saque excede o limite. @@@")
-
-    elif excedeu_saques:
-        print("\n@@@ Operação falhou! Número máximo de saques excedido. @@@")
-
-    elif valor > 0:
+def sacar(saldo, valor, extrato, limite, numero_saques, limite_saques, /):
+    if (
+        valor > 0
+        and valor <= saldo
+        and numero_saques < limite_saques
+        and valor <= limite
+    ):
         saldo -= valor
-        extrato += f"Saque:\t\tR$ {valor:.2f}\n"
         numero_saques += 1
-        print("\n=== Saque realizado com sucesso! ===" datetime.datetime)
-
+        data_horario = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        extrato += (
+            f"Saque:\t\tR$ {valor:.2f}\tData: {data_horario}\n"
+        )
+        print("\n=== Saque realizado com sucesso! ===")
     else:
-        print("\n@@@ Operação falhou! O valor informado é inválido. @@@")
-
-    return saldo, extrato
+        print(
+            "\n@@@ Operação falhou! Verifique se você tem saldo suficiente"
+            " ou se atingiu o limite de saques. @@@"
+        )
+    return saldo, extrato, numero_saques
 
 
 def exibir_extrato(saldo, /, *, extrato):
+    data_horario = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     print("\n================ EXTRATO ================")
-    print("Não foram realizadas movimentações." if not extrato else extrato datetime.today)
-    print(f"\nSaldo:\t\tR$ {saldo:.2f}" datetime.today)
+    print("Não foram realizadas movimentações." if not extrato else extrato)
+    print(f"\nSaldo:\t\tR$ {saldo:.2f}"\tData: {data_horario}\n")
     print("==========================================")
 
 
 def criar_usuario(usuarios):
     cpf = input("Informe o CPF (somente número): ")
     usuario = filtrar_usuario(cpf, usuarios)
+    cpl_len = len(cpf)
+    if cpl_len != 11:
+        print("\n@@@ CPF inválido! @@@")
+        return
 
     if usuario:
         print("\n@@@ Já existe usuário com esse CPF! @@@")
