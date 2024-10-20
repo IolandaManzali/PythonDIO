@@ -46,7 +46,7 @@ O sistema deve trabalhar com apenas um usuário e deve garantir que o saldo nunc
     - Depósito: positional only
     - Extrato: positional only and keywords only  
 
-- Conta Corrente:
+- **Conta Corrente:**
     - O programa deve armazenar as contas em uma lista
     - Uma conta é composta por:
         - **Agência** (número fixo: 0001)
@@ -62,4 +62,73 @@ O sistema deve trabalhar com apenas um usuário e deve garantir que o saldo nunc
 
 **Dica**: 
 Para vincular um usuário a uma conta, foltre a lista de usuários buscando o núero do CPF informado para cada usuários da lista.
+
+
+## **Desafio 04: Remodelar o Sistema Bancário em POO**
+
+### **Remodelar o Sistema:**
+
+
+- Atualizar a implementação do sistema bancário, para armazenar os dados de clientes e contas bancárias em objetos ao invés de dicionários. O código deve seguir o modelo de classes UML a seguir:
+
+    * ![UML DESAFIO DIO](image.png)
+
+* Classes:   
+   
+
+    * Saque
+        * **_ valor: float**
+
+            * Saque herda atributos e métodos da classe Transação   
+
+    * Depósito
+        * **_ valor: float**
+
+            * Depósito herda atributos e métodos da classe Transação   
+   
+    * Transação << interface >> | Classe abstrata
+        * **+ registrar(conta: Conta)**
+      
+    * Histórico
+        * **+ adicionar_transacao(transacao: Transacao)**
+
+            * Histórico pertence a uma conta 
+
+    * Conta
+        * **- saldo: float**
+        * **- numero: int**
+        * **- agencia: str**
+        * **- cliente: Cliente**
+        * **- historico: Historico**
+        * **+ saldo(): float**
+        * **+ nova_conta(cliente: Cliente, numero: int): Conta**
+        * **+ sacar(valor: float): bool**
+
+            * Conta tem um histórico
+            * Conta está vinculada a um Cliente obrigatóriamente
+
+    * Conta Corrente
+        * **_ limite: float**
+        * **_ limite_saques: int**
+
+            * A classe Conta Corrente deriva da classe Conta**
+
+    * Cliente
+        * **_endereco: str**
+        * **_ contas: list**
+        * **+ realizar_transacao(conta: Conta, transacao: Transacao)**
+        * **+ adicionar_conta(conta:Conta)**
+
+            * Cliente poder ter várias Contas
+
+    * Pessoa Física
+        * **_ cpf: str**
+        * **_ nome: str**
+        * **_ data_nascimento: date**
+
+            * Pessoa Física herda atributos e métodos da classe Cliente   
+ 
+
+**Desafio Extra**: 
+Após concluir a modelagem das classes e a criação dos métodos. Atualizar os métodos que tratam as oeperações do menu para funcionarem com as classes modelasdas.
 
