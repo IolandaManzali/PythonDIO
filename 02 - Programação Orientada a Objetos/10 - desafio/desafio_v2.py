@@ -181,7 +181,7 @@ def menu():
     [d]\tDepositar
     [s]\tSacar
     [e]\tExtrato
-    [nc]\tNova conta
+    [nc]\tNova contanu
     [lc]\tListar contas
     [nu]\tNovo usuário
     [q]\tSair
